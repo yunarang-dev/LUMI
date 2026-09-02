@@ -1,0 +1,38 @@
+# macOS
+.DS_Store
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+secrets/
+credentials/
+tokens/
+
+# OpenClaw runtime / local state
+.openclaw/
+tools/
+state/
+sessions/
+logs/
+cache/
+tmp/
+
+# IDE
+.vscode/
+.idea/
+
+# Node.js
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+#macOS
+.DS_Store
