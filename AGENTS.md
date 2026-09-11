@@ -557,6 +557,20 @@ A project profile may refine orchestration for that project where
 
 ---
 
+### Shared Independent Review Workflow
+
+For detailed Independent Review behavior, read and follow
+`workflows/development/INDEPENDENT_REVIEW.md`.
+
+When a managed project defines project-specific Review configuration, use that
+configuration to supply scope, sources, integrations, and completion
+requirements to the shared Review workflow.
+
+Project-specific configuration must not weaken the shared fresh-session,
+read-only, evidence-first, or independence requirements.
+
+---
+
 ## 17. [L1] Managed Project Development Workflow
 
 When the active project defines a managed development workflow:
