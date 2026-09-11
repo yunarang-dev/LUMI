@@ -67,6 +67,17 @@ Leave unused fields blank rather than inventing values.
 - Independent Review: false
 - Final Independent Review Required: false
 
+### Planning Sync
+
+When `Planning Sync` is enabled, define the project's synchronization behavior
+in a project-specific procedure.
+
+Use `projects/templates/PLANNING_SYNC.example.md` as a starting template when
+useful.
+
+Planning Sync remains project-specific and should not be assumed to use the same
+change-detection or orchestration-state model as another project.
+
 ### Development Delegation
 
 When enabled, actual project development follows the shared delegation policy in
