@@ -34,8 +34,17 @@ __pycache__/
 .venv/
 venv/
 
-#macOS
-.DS_Store
+# Local Lumi environment
+TOOLS.md
+
+# Local Lumi user context and memory
+USER.md
+MEMORY.md
+memory/
+
+# Local Lumi project configuration
+projects/ROUTING.md
+projects/local/
 
 # Repository
 archive/
