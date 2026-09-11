@@ -632,7 +632,10 @@ Do not overwrite user work without understanding it.
 
 ## 19. Git Safety
 
-Project-specific Git policy takes precedence when configured.
+For detailed managed-development Git behavior, read and follow
+`workflows/development/GIT_WORKFLOW.md`.
+
+Project-specific Git policy may refine the shared workflow when configured.
 
 For repositories without a more specific policy:
 
