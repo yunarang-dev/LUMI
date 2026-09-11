@@ -578,7 +578,11 @@ Do not modify unrelated files or overwrite unrelated user work.
 
 ### Recovery
 
-When a managed project defines a recovery procedure, use it.
+For detailed development recovery behavior, read and follow
+`workflows/development/RECOVERY.md`.
+
+When a managed project defines a project-specific recovery procedure, apply it
+as an extension of the shared recovery workflow.
 
 Otherwise:
 
