@@ -54,10 +54,9 @@ Purpose:
 - Project routing.
 - Development delegation.
 
-Reference binding:
+Logical binding:
 
-- Model: openai/gpt-5.6-luna
-- Thinking: xhigh
+- Profile: `model.level.3`
 - Runtime: OpenClaw
 - Authentication: OpenAI API key
 
@@ -72,11 +71,12 @@ Purpose:
 - Validation.
 - Worker coordination.
 
-Reference bindings:
+Logical bindings:
 
-- Default: openai/gpt-5.6-luna / xhigh / Codex
-- Complex implementation: openai/gpt-5.6-sol / high / Codex
-- Development planning: openai/gpt-6-astra / high / Codex
+- Default execution: `model.level.3` / Codex
+- Heavy execution: `model.level.2` / Codex
+- Advanced orchestration: `model.level.1` / Codex
+- Initial Planning: `model.level.0` / Codex
 
 ### Workers
 
@@ -84,9 +84,9 @@ Workers are temporary OpenClaw sub-agents created by dev-lumi.
 
 Reference policy:
 
-- General worker: openai/gpt-5.6-luna / xhigh / Codex
-- Complex single worker: openai/gpt-5.6-sol / high / Codex
-- Astra must not be used for normal implementation workers.
+- General worker: `model.level.3` / Codex
+- Complex bounded worker: `model.level.2` / Codex
+- `model.level.0` must not be used for normal implementation workers.
 - Maximum concurrent workers: 4
 - Maximum spawn depth: 2
 - Worker archive delay: 60 minutes
@@ -100,10 +100,10 @@ Purpose:
 - Evidence gathering.
 - Findings and recommendations.
 
-Reference binding:
+Logical bindings:
 
-- Model: openai/gpt-6-astra
-- Thinking: xhigh
+- Independent Review: `model.level.1`
+- Final Independent Review: `model.level.0`
 - Runtime: Codex
 
 Each Independent Review should use a fresh review session separate from
@@ -200,18 +200,23 @@ The logical behavior of these agents is defined by `ORCHESTRATION.md`.
 
 This adapter only binds those roles to OpenClaw.
 
+`config/model-levels.yaml` is the canonical source for provider, model, and
+opaque provider options. Any physical values shown in this adapter describe how
+the current canonical reference binding is applied to OpenClaw; they do not
+define shared LUMI policy.
+
 ---
 
 ## main Configuration
 
-Reference settings:
+Current reference settings resolved from `config/model-levels.yaml`:
 
     Agent ID: main
     Model: openai/gpt-5.6-luna
     Thinking: xhigh
     Agent runtime: openclaw
 
-main should not normally use Sol or Astra directly.
+`main` uses `model.level.3`; physical values are adapter bindings only.
 
 Development work should be delegated according to `ORCHESTRATION.md`.
 
@@ -219,14 +224,14 @@ Development work should be delegated according to `ORCHESTRATION.md`.
 
 ## dev-lumi Configuration
 
-Reference settings:
+Current default settings resolved from `config/model-levels.yaml`:
 
     Agent ID: dev-lumi
     Default model: openai/gpt-5.6-luna
     Thinking: xhigh
     Agent runtime: codex
 
-Additional available development routes:
+Additional physical routes required by the current canonical binding:
 
     openai/gpt-5.6-sol
     openai/gpt-6-astra
@@ -245,15 +250,16 @@ Sub-agent defaults:
 
 ## reviewer-lumi Configuration
 
-Reference settings:
+Current persistent-profile default resolved from `model.level.1`:
 
     Agent ID: reviewer-lumi
-    Model: openai/gpt-6-astra
-    Thinking: xhigh
+    Model: openai/gpt-5.6-sol
+    Thinking: high
     Agent runtime: codex
 
-The persistent agent profile does not replace the requirement for fresh review
-sessions.
+Final Independent Review overrides the persistent default with the physical
+binding resolved from `model.level.0`. The persistent agent profile does not
+replace the requirement for fresh review sessions.
 
 Each Independent Review must still be isolated from implementation state as
 defined by `ORCHESTRATION.md`.

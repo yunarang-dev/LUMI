@@ -195,12 +195,15 @@ Read only enough context to perform reliable reconciliation.
 
 Determine whether the change requires:
 
+- a revision check or no-change path;
 - straightforward reconciliation;
-- or substantial development planning.
+- heavy technical impact analysis;
+- major decomposition or dependency redistribution;
+- or genuine Initial Planning from zero.
 
 Straightforward reconciliation may remain on the normal orchestration route.
 
-Substantial planning may include:
+Higher-cost analysis may include:
 
 - dependency restructuring;
 - major impact analysis;
@@ -212,16 +215,11 @@ Substantial planning may include:
 
 ### Step 7 — Use Shared Planning Route When Required
 
-When substantial development planning is required, follow
-`ORCHESTRATION.md`.
-
-The shared reference route is:
-
-    dev-lumi
-    → GPT-6 Astra
-    → High
-    → Codex
-    → planning analysis only
+When planning analysis is required, select the role-appropriate logical route
+from `ORCHESTRATION.md`: `model.level.2` for heavy technical impact analysis,
+`model.level.1` for major decomposition or dependency redistribution, and
+`model.level.0` only for genuine Initial Planning or effectively complete
+replanning from zero.
 
 The planning-analysis pass must remain separate from implementation.
 
@@ -324,12 +322,18 @@ Routine work such as:
 
 does not automatically require the substantial planning route.
 
-Use Astra High only when substantial planning reasoning materially benefits from
-it.
+Use `model.level.3` or the normal orchestration route for revision checks,
+no-change handling, and straightforward reconciliation. Use `model.level.2`
+for heavy technical impact analysis and `model.level.1` for major work
+decomposition or dependency redistribution.
+
+Use `model.level.0` only for true Initial Planning or when the prior plan is so
+fully invalidated that planning must restart from zero.
 
 Do not escalate merely because Planning changed.
 
-Do not use Sol as a substitute for the configured Astra planning role.
+Planning Sync is reconciliation of an existing plan, so a document change alone
+never selects `model.level.0`.
 
 After Planning analysis and reconciliation complete, return to normal
 development routing.

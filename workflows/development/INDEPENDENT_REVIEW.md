@@ -96,15 +96,15 @@ Final Independent Review also requires a fresh review session.
 Independent Review uses the shared reviewer route defined in
 `ORCHESTRATION.md`.
 
-Current reference route:
+Logical routes:
 
 - Reviewer role: `reviewer-lumi`
-- Model: `openai/gpt-6-astra`
-- Thinking: `xhigh`
-- Runtime: Codex
+- Independent Review: `model.level.1`
+- Final Independent Review: `model.level.0`
 
-Do not substitute Luna or Sol for the configured Astra xHigh Independent Review
-route merely because a Review appears straightforward.
+The persistent reviewer role is not tied to one physical model. Select the
+logical route from the review type, then let the runtime adapter resolve its
+current binding.
 
 The reviewer route applies only to Independent Review.
 
@@ -744,7 +744,7 @@ the project is considered complete.
 Final Independent Review must:
 
 1. Create a fresh `reviewer-lumi` review session.
-2. Use GPT-6 Astra with xHigh thinking through the Codex runtime.
+2. Use `model.level.0` through the configured runtime adapter.
 3. Apply the same read-only and independence rules.
 4. Review the full configured final scope against actual implementation.
 5. Verify major cross-system Regression.
@@ -774,7 +774,7 @@ It is not an automatic completion signal.
     + actual implementation
     → planned Review Checkpoint
     → LUMI creates fresh reviewer-lumi session
-    → Reviewer uses Astra xHigh through Codex
+    → Reviewer uses model.level.1 through the configured adapter
     → read-only independent evidence gathering
     → requirements ↔ orchestration state ↔ implementation comparison
     → Player-Path Validation when applicable
@@ -783,7 +783,7 @@ It is not an automatic completion signal.
     → orchestration-state update when configured
     → separate Rework when required
     → progression decision
-    → Final Independent Review when required
+    → Final Independent Review with model.level.0 when required
 
 ---
 
@@ -864,4 +864,6 @@ Throughout Independent Review:
 - LUMI remains the orchestration authority;
 - the Reviewer does not mutate Git state or history;
 - Final Independent Review uses a fresh session when required;
+- ordinary Independent Review and parallel intermediate reviewers use
+  `model.level.1`, not `model.level.0`;
 - Review should reduce uncertainty rather than merely repeat previous claims.

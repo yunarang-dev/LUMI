@@ -106,15 +106,17 @@ Shared model routing from `ORCHESTRATION.md` applies by default.
 Project-specific exceptions should normally remain empty.
 
 - Default Development Override:
-- Complex Development Override:
-- Planning Override:
+- Heavy Development Override:
+- Advanced Orchestration Override:
+- Initial Planning Override:
 - Independent Review Override:
+- Final Independent Review Override:
 
 Use overrides only when the project has a concrete reason to differ from shared
 LUMI policy.
 
-A project profile must not silently convert Astra into a normal implementation
-worker.
+A project profile must not silently repurpose `model.level.0` as a normal
+implementation route.
 
 A project-specific override does not change the logical responsibilities of
 `main`, `dev-lumi`, workers, or `reviewer-lumi`.

@@ -14,6 +14,10 @@ Commands may need adjustment when OpenClaw changes its configuration schema.
 
 Always inspect current state before applying configuration changes.
 
+Before applying these commands, read `config/model-levels.yaml`. It is the
+canonical binding source. The physical values below are a reference procedure
+for applying that file to OpenClaw, not an independent model-routing policy.
+
 ---
 
 ## 1. Paths
@@ -109,11 +113,11 @@ installation.
 
 `main` is the primary user-facing LUMI agent.
 
-Reference model:
+`model.level.3` reference model:
 
     openai/gpt-5.6-luna
 
-Reference reasoning level:
+`model.level.3` opaque reasoning option:
 
     xhigh
 
@@ -129,7 +133,7 @@ Set the default thinking level:
 
     openclaw config set agents.entries.main.thinkingDefault xhigh
 
-Pin Luna to the OpenClaw runtime:
+Pin the current `model.level.3` model to the OpenClaw runtime:
 
     openclaw config set 'agents.entries.main.models["openai/gpt-5.6-luna"].agentRuntime.id' openclaw
 
@@ -199,7 +203,8 @@ Optional reference identity:
 
 ## 8. Configure dev-lumi Runtime Routes
 
-Pin the supported development models to the Codex runtime.
+Pin the physical models required by the current canonical levels to the Codex
+runtime.
 
 Luna:
 
@@ -213,11 +218,9 @@ Astra:
 
     openclaw config set 'agents.entries.dev-lumi.models["openai/gpt-6-astra"].agentRuntime.id' codex
 
-Their logical roles are defined in `ORCHESTRATION.md`:
-
-- Luna xHigh — normal development.
-- Sol High — complex implementation.
-- Astra High — substantial development planning only.
+Their logical roles are defined only in `ORCHESTRATION.md`. Provider-specific
+reasoning options come from `config/model-levels.yaml` and must be applied when
+the corresponding route is selected.
 
 The existence of a configured model route does not authorize using it outside
 its defined role.
@@ -251,7 +254,7 @@ Workers are ephemeral sub-agents created by dev-lumi.
 Do not create persistent worker profiles unless a future workflow specifically
 requires them.
 
-Set Luna as the default worker model:
+Set the current `model.level.3` binding as the default worker model:
 
     openclaw config set agents.entries.dev-lumi.subagents.model.primary openai/gpt-5.6-luna
 
@@ -276,27 +279,30 @@ that it remains 60 minutes unless intentionally changed.
 
 Worker model overrides must follow `ORCHESTRATION.md`.
 
-A complex bounded worker may use Sol High.
+A complex bounded worker may use `model.level.2`.
 
-Astra must not be used as a normal implementation worker.
+`model.level.0` must not be used as a normal implementation worker.
 
 ---
 
 ## 11. Create reviewer-lumi
 
-Create the persistent Independent Review profile:
+Create the persistent Independent Review profile with the current
+`model.level.1` binding:
 
     openclaw agents add reviewer-lumi \
       --workspace ~/.openclaw/workspace \
-      --model openai/gpt-6-astra \
+      --model openai/gpt-5.6-sol \
       --non-interactive
 
-Set the review thinking level:
+Set the ordinary Independent Review reasoning option:
 
-    openclaw config set agents.entries.reviewer-lumi.thinkingDefault xhigh
+    openclaw config set agents.entries.reviewer-lumi.thinkingDefault high
 
-Pin Astra to Codex:
+Pin the current `model.level.1` and `model.level.0` models to Codex so the
+review type can select the correct logical route:
 
+    openclaw config set 'agents.entries.reviewer-lumi.models["openai/gpt-5.6-sol"].agentRuntime.id' codex
     openclaw config set 'agents.entries.reviewer-lumi.models["openai/gpt-6-astra"].agentRuntime.id' codex
 
 Optional reference identity:
@@ -311,7 +317,9 @@ When the expected Codex OAuth profile is named `openai:default`:
 The persistent reviewer profile is only a runtime role configuration.
 
 Every actual Independent Review must still use a fresh review session isolated
-from implementation sessions.
+from implementation sessions. Ordinary and intermediate Independent Review use
+`model.level.1`; only Final Independent Review selects `model.level.0` and its
+configured provider options.
 
 ---
 
@@ -346,7 +354,7 @@ Verify model status independently for each persistent agent:
     openclaw models status --agent dev-lumi
     openclaw models status --agent reviewer-lumi
 
-Expected logical defaults:
+Expected adapter defaults resolved from the canonical configuration:
 
     main
     → openai/gpt-5.6-luna
@@ -358,7 +366,14 @@ Expected logical defaults:
     → xhigh
     → Codex runtime
 
-    reviewer-lumi
+    reviewer-lumi ordinary review
+    → model.level.1
+    → openai/gpt-5.6-sol
+    → high
+    → Codex runtime
+
+    reviewer-lumi final review
+    → model.level.0
     → openai/gpt-6-astra
     → xhigh
     → Codex runtime
@@ -429,17 +444,19 @@ After setup, the following should remain true:
 
 1. The LUMI Git repository and OpenClaw workspace are separate.
 2. `main` is the normal user-facing agent.
-3. `main` defaults to Luna xHigh through the OpenClaw runtime.
-4. `dev-lumi` defaults to Luna xHigh through Codex.
-5. Sol High is available for complex development work.
-6. Astra High is reserved for substantial development planning.
-7. Workers are ephemeral and default to Luna xHigh.
-8. Astra is not a normal implementation-worker model.
-9. `reviewer-lumi` uses Astra xHigh through Codex.
+3. `main` defaults to `model.level.3` through the OpenClaw runtime.
+4. `dev-lumi` defaults to `model.level.3` through Codex.
+5. `model.level.2` is available for heavy execution.
+6. `model.level.1` handles complex orchestration and Independent Review.
+7. Workers are ephemeral and default to `model.level.3`.
+8. `model.level.0` is not a normal implementation-worker route.
+9. `reviewer-lumi` uses `model.level.1` normally and `model.level.0` only for
+   Final Independent Review.
 10. Independent Review sessions remain fresh and read-only.
 11. API authentication and Codex authentication remain conceptually separate.
 12. Gateway authentication and OpenAI authentication remain separate.
 13. No plaintext secret is committed to the LUMI repository.
+14. `config/model-levels.yaml` remains the canonical physical binding source.
 
 ---
 

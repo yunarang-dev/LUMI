@@ -272,7 +272,7 @@ Recovery follows `ORCHESTRATION.md`.
 When the problem is clear and bounded:
 
 - verify current state;
-- resume normal development with Luna xHigh when implementation remains;
+- resume normal development with `model.level.3` when implementation remains;
 - retry only the missing step when appropriate.
 
 ### Complex or Structural Technical Failure
@@ -280,16 +280,21 @@ When the problem is clear and bounded:
 When the cause is uncertain, structurally significant, tightly coupled, or
 high-risk:
 
-- use Sol High when stronger technical reasoning materially reduces risk;
+- use `model.level.2` when heavier technical reasoning materially reduces risk;
 - keep implementation within the normal development boundary.
 
 ### Replanning Required
 
-When Recovery reveals that the development plan itself requires substantial
-restructuring:
+When Recovery requires complex plan adjustment, dependency redistribution, or
+work reallocation:
 
-- use the shared Astra High planning route;
+- use `model.level.1` for the orchestration decision;
 - separate replanning from implementation.
+
+Do not enter `model.level.0` merely because an existing plan changed. Re-enter
+Initial Planning only when Recovery invalidates the existing strategy so
+completely that the project or major work must genuinely be planned again from
+zero.
 
 ### Independent Review
 
@@ -299,7 +304,9 @@ When independent verification is required:
 - use a fresh review session;
 - follow the shared Independent Review policy.
 
-Do not use Sol as a substitute for Astra planning or Astra Independent Review.
+Formal Independent Review uses `model.level.1`; Final Independent Review uses
+`model.level.0`. Ordinary read-only Recovery QA does not become Independent
+Review automatically.
 
 Do not escalate merely because a timeout, rate limit, disconnected tool, or
 unavailable service occurred.

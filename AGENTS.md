@@ -45,6 +45,10 @@ Lumi workspace rules may use four priority levels.
 - **L2 — Recommended:** Preferred behavior when reasonably applicable.
 - **L3 — Optional:** Apply when useful.
 
+These instruction priority labels are distinct from the
+`model.level.0`–`model.level.3` execution profiles defined in
+`ORCHESTRATION.md`.
+
 ### Priority Resolution
 
 - Higher levels take precedence over lower levels.

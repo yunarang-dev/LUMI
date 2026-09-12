@@ -86,10 +86,9 @@ reviewer-lumi
 `main` is the normal conversation agent and the sole top-level orchestration
 authority.
 
-### Default model
+### Default route
 
-- Model: `openai/gpt-5.6-luna`
-- Thinking: `xhigh`
+- Logical profile: `model.level.3`
 
 ### Responsibilities
 
@@ -129,10 +128,10 @@ remain with `main` until actual development execution is required.
 
 ### Model policy
 
-`main` does not normally self-escalate to Sol or Astra.
+`main` uses `model.level.3` by default.
 
 When development work requires stronger reasoning, route that work through the
-appropriate `dev-lumi` model path instead.
+appropriate `dev-lumi` logical profile instead.
 
 ---
 
@@ -144,8 +143,7 @@ It remains an orchestrator even when it performs implementation itself.
 
 ### Default route
 
-- Model: `openai/gpt-5.6-luna`
-- Thinking: `xhigh`
+- Logical profile: `model.level.3`
 
 Use this route for:
 
@@ -156,12 +154,11 @@ Use this route for:
 - Straightforward debugging.
 - Ordinary development inspection and validation.
 
-### Complex implementation route
+### Heavy implementation route
 
-- Model: `openai/gpt-5.6-sol`
-- Thinking: `high`
+- Logical profile: `model.level.2`
 
-Use Sol High when stronger technical judgment materially reduces risk.
+Use `model.level.2` when stronger technical judgment materially reduces risk.
 
 Typical reasons include:
 
@@ -174,42 +171,55 @@ Typical reasons include:
 - High-cost technical mistakes.
 - Difficult single-owner implementation work.
 
-Do not use Sol merely because:
+Do not use `model.level.2` merely because:
 
 - The task is long.
 - Many files are involved.
 - The task uses many tokens.
 - Parallel capacity is available.
 
-Return to Luna xHigh when the high-complexity portion is complete.
+Return to `model.level.3` when the high-complexity portion is complete.
 
-### Planning route
+### Advanced orchestration route
 
-- Model: `openai/gpt-6-astra`
-- Thinking: `high`
-- Scope: planning only
+- Logical profile: `model.level.1`
 
-Use Astra High for substantial development planning such as:
+Use `model.level.1` for complex orchestration judgment such as:
 
-- Architecture planning.
 - Complex dependency analysis.
-- Milestone restructuring.
 - Ownership design.
 - Parallel execution planning.
 - Integration planning.
 - Large rework assessment.
-- High-risk implementation strategy.
+- Worker decomposition and work distribution.
+- Significant replanning of an existing plan.
 
-Astra planning is analysis, not implementation authorization.
+This route may produce orchestration analysis, but it does not change
+implementation authority.
 
-During an Astra planning pass:
+### Initial Planning route
+
+- Logical profile: `model.level.0`
+- Scope: initial planning only
+
+Use `model.level.0` only for the first important high-level planning pass for a
+project or major body of work, including initial architecture, milestone,
+dependency, or execution-strategy design.
+
+Do not use `model.level.0` for ordinary task decomposition, implementation
+sequencing, worker fan-out, small plan revisions, or routine replanning.
+
+Initial Planning is analysis, not implementation authorization.
+
+During an Initial Planning pass:
 
 - Do not modify implementation content.
 - Do not modify Git state or history.
 - Do not silently expand project scope.
-- Return the resulting plan to the normal development workflow.
+- Return the resulting plan to the normal orchestration or development route.
 
-Astra is not a normal implementation worker.
+`model.level.0` is not a normal implementation worker or a generic escalation
+target.
 
 ---
 
@@ -221,8 +231,7 @@ They are execution units, not independent orchestration authorities.
 
 ### General worker
 
-- Model: `openai/gpt-5.6-luna`
-- Thinking: `xhigh`
+- Logical profile: `model.level.3`
 
 Use for:
 
@@ -232,24 +241,23 @@ Use for:
 - Clearly bounded corrective work.
 - Tasks with clean ownership boundaries.
 
-### Complex single worker
+### Complex bounded worker
 
-- Model: `openai/gpt-5.6-sol`
-- Thinking: `high`
+- Logical profile: `model.level.2`
 
 Use only when one bounded workstream is individually complex enough to justify
-Sol High.
+the heavy execution profile.
 
-Do not use Sol workers merely to increase aggregate model strength.
+Do not use `model.level.2` workers merely to increase aggregate model strength.
 
-### Astra restriction
+### Highest-level restriction
 
-Workers must not use Astra for implementation.
+Workers must not use `model.level.0` for implementation.
 
-Astra is reserved for:
+`model.level.0` is reserved for:
 
-- `dev-lumi` planning.
-- `reviewer-lumi` independent review.
+- Initial Planning.
+- Final Independent Review.
 
 ---
 
@@ -258,6 +266,15 @@ Astra is reserved for:
 Parallel execution is an optimization, not a default requirement.
 
 Before spawning multiple workers, `dev-lumi` must evaluate:
+
+Use `model.level.1` when the decomposition, ownership, dependency, or work
+distribution decision is itself complex. Once bounded tasks are defined,
+workers default to `model.level.3`; only an individually complex bounded
+implementation workstream may use `model.level.2`.
+
+Worker count alone never changes the selected model level. Ordinary read-only
+QA or investigation also remains on its task-appropriate execution route and
+does not become formal Independent Review merely because it is read-only.
 
 - Whether tasks can progress independently.
 - Whether they share mutable files or project state.
@@ -329,8 +346,12 @@ Independent Review is performed by `reviewer-lumi`.
 
 ### Review route
 
-- Model: `openai/gpt-6-astra`
-- Thinking: `xhigh`
+- Independent Review: `model.level.1`
+- Final Independent Review: `model.level.0`
+
+The persistent `reviewer-lumi` role is not synonymous with a physical model or
+one logical level. It selects the route according to whether the review is an
+ordinary checkpoint or the configured final review.
 
 ### Independence requirements
 
@@ -381,37 +402,41 @@ project or milestone is considered complete.
 
 ## 8. Model Routing Rules
 
-Model selection is based on reasoning need, not task size.
+The logical levels are stable execution profiles. Physical provider, model,
+and provider-specific options are resolved by an adapter from
+`config/model-levels.yaml`; core policy must not interpret those options.
 
-### Luna xHigh
+### `model.level.0` — Strategy and Final Verification
 
-Prefer Luna xHigh when:
+Use only for Initial Planning and Final Independent Review. It is not a normal
+implementation, worker, QA, ordinary review, or routine replanning route.
 
-- Requirements are clear.
-- Scope is bounded.
-- Risk is low or moderate.
-- Implementation pattern is known.
-- Debugging cause is reasonably localized.
-- Parallel workstreams are straightforward.
+### `model.level.1` — Advanced Orchestration and Independent Verification
 
-### Sol High
+Use for Independent Review, intermediate review checkpoints, complex
+parallelization decisions, worker decomposition, ownership and dependency
+judgment, work distribution, and complex orchestration decisions. Do not use it
+for Final Independent Review.
 
-Prefer Sol High when:
+### `model.level.2` — Heavy General Execution
 
-- Technical uncertainty is high.
-- Dependencies are tightly coupled.
-- Regression risk is significant.
-- Architecture-level implementation judgment is required.
-- Repeated failures indicate a structural problem.
-- A complex single workstream benefits materially from stronger reasoning.
+Use for complex implementation, structural debugging, difficult investigation,
+high-risk technical analysis, heavy validation, and complex bounded workers.
+Task length or file count alone does not justify this route.
 
-### Astra High
+### `model.level.3` — Default Execution
 
-Use Astra High only for substantial development planning.
+Use for normal implementation, straightforward debugging, routine validation,
+ordinary development, general workers, and the default routes for `main` and
+`dev-lumi`. Prefer this level whenever the task does not require another
+profile's specific role.
 
-### Astra xHigh
+### Role-aware selection
 
-Use Astra xHigh for Independent Review.
+Levels do not form a linear escalation chain. Never treat routing as
+`model.level.3` → `model.level.2` → `model.level.1` → `model.level.0`.
+Implementation difficulty alone cannot select Initial Planning or Final Review,
+and worker fan-out alone cannot select a higher level.
 
 ### Non-escalation cases
 
@@ -451,8 +476,9 @@ When completion is uncertain:
 4. Resume only from that point.
 5. Avoid duplicate implementation.
 
-Escalate Luna → Sol only when stronger reasoning can materially help resolve the
-technical uncertainty.
+Move from `model.level.3` to `model.level.2` only when heavier execution can
+materially help resolve technical uncertainty. Use `model.level.1` only when
+Recovery requires complex orchestration or redistribution judgment.
 
 Do not escalate because infrastructure is unavailable.
 
@@ -476,7 +502,9 @@ Keep handoff messages concise.
 
 When Independent Review begins:
 
-`🔎 Lumi review: main → reviewer-lumi/Astra xHigh — independent review started`
+`🔎 Lumi review: main → reviewer-lumi/model.level.1 — independent review started`
+
+For Final Independent Review, report `model.level.0` instead.
 
 When review completes:
 
@@ -492,13 +520,13 @@ Notify the user when an actual development model route changes materially.
 
 Examples:
 
-`🔄 Codex model: Luna xHigh → Sol High — complex implementation`
+`🔄 Codex model: model.level.3 → model.level.2 — complex implementation`
 
-`🔄 Codex model: Sol High → Luna xHigh — complex scope complete`
+`🔄 Codex model: model.level.2 → model.level.3 — complex scope complete`
 
-`🔄 Codex planning: Luna xHigh → Astra High — development planning`
+`🔄 Codex orchestration: model.level.3 → model.level.1 — complex decomposition`
 
-`🔄 Codex planning: Astra High → Luna xHigh — planning complete`
+`🔄 Codex planning: model.level.3 → model.level.0 — Initial Planning`
 
 Do not generate transition messages when the runtime/model change cannot be
 reliably observed.
@@ -555,33 +583,39 @@ higher-priority safety or authorization rules.
 
 ---
 
-## 14. Reference Runtime Binding
+## 14. Runtime Binding Contract
 
 Lumi's logical roles must remain distinct from the runtime used to implement
 them.
 
-The current OpenClaw reference binding is:
+The canonical physical binding configuration is `config/model-levels.yaml`.
+Adapters resolve each logical profile to a provider, model, and opaque
+provider-specific `options` object. LUMI core does not interpret option fields
+such as reasoning effort or thinking budget.
+
+The logical OpenClaw route is:
 
 ~~~text
 main
 → OpenClaw runtime
-→ OpenAI API
-→ GPT-5.6 Luna xHigh
+→ model.level.3
 
 dev-lumi
 → Codex runtime
-→ GPT-5.6 Luna xHigh
-→ GPT-5.6 Sol High when justified
-→ GPT-6 Astra High for planning only
+→ model.level.3 by default
+→ model.level.2 for heavy execution
+→ model.level.1 for advanced orchestration
+→ model.level.0 for Initial Planning only
 
 workers
 → Codex runtime
-→ GPT-5.6 Luna xHigh
-→ GPT-5.6 Sol High for complex single workstreams
+→ model.level.3 by default
+→ model.level.2 for complex bounded workstreams
 
 reviewer-lumi
 → Codex runtime
-→ GPT-6 Astra xHigh
+→ model.level.1 for Independent Review
+→ model.level.0 for Final Independent Review
 ~~~
 
 This runtime binding may be replaced by another adapter without changing the
@@ -598,10 +632,10 @@ The following should remain true regardless of project or runtime:
 3. `dev-lumi` owns development execution.
 4. Workers have bounded ownership.
 5. Worker count is driven by task structure, not available capacity.
-6. Astra is not used as a normal implementation worker.
+6. `model.level.0` is not used as a normal implementation worker.
 7. Independent Review is fresh, separate, and read-only.
 8. Reviewer findings do not modify implementation directly.
-9. Model escalation is based on reasoning need and failure risk.
+9. Model selection follows logical role and reasoning need, not a linear chain.
 10. Environment failures do not justify model escalation.
 11. Confirmed work is preserved during recovery.
 12. Runtime choice does not redefine Lumi's logical role boundaries.

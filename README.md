@@ -30,6 +30,8 @@ The current core consists of:
 - `AGENTS.md` — shared execution, safety, memory, project, and Git policy.
 - `ORCHESTRATION.md` — agent roles, delegation, worker coordination, model
   routing, recovery, and Independent Review.
+- `config/model-levels.yaml` — canonical provider and runtime-model bindings for
+  logical model levels.
 - `SOUL.md` — personality, communication style, and working character.
 - `IDENTITY.md` — Lumi's runtime-independent identity.
 - `TOOLS.example.md` — template for local machine and runtime notes.
@@ -75,22 +77,35 @@ A separate read-only Independent Review role.
 Review is intentionally isolated from implementation and reports findings back
 to the orchestration authority instead of modifying the project directly.
 
-## Reference Model Routing
+## Logical Model Routing
 
-The current OpenClaw reference configuration uses:
+LUMI core routes work through four provider-independent execution profiles:
 
-- `main` — GPT-5.6 Luna, xHigh, direct API/OpenClaw runtime
-- `dev-lumi` default — GPT-5.6 Luna, xHigh, Codex runtime
-- complex development — GPT-5.6 Sol, High, Codex runtime
-- substantial development planning — GPT-6 Astra, High, Codex runtime
-- general workers — GPT-5.6 Luna, xHigh, Codex runtime
-- complex single worker — GPT-5.6 Sol, High, Codex runtime
-- Independent Review — GPT-6 Astra, xHigh, Codex runtime
+| Profile | Stable responsibility |
+| --- | --- |
+| `model.level.0` | Initial Planning and Final Independent Review |
+| `model.level.1` | Advanced orchestration, decomposition, and Independent Review |
+| `model.level.2` | Heavy implementation, investigation, debugging, and validation |
+| `model.level.3` | Default implementation, routine validation, and general workers |
 
-These bindings are runtime configuration, not Lumi's identity.
+These levels are role-aware profiles, not a linear difficulty ladder. LUMI's
+shared orchestration policy depends only on this interface, so a deployment may
+bind different levels to OpenAI, Anthropic, Google, local, or mixed providers
+without changing core workflow semantics.
 
-The logical agent roles are intended to remain usable if the underlying
-runtime or model family changes.
+### Current OpenAI Reference Binding
+
+The canonical binding in `config/model-levels.yaml` currently resolves:
+
+| Profile | Reference provider/model | Opaque provider options |
+| --- | --- | --- |
+| `model.level.0` | OpenAI GPT-6 Astra | `reasoning_effort: xhigh` |
+| `model.level.1` | OpenAI GPT-5.6 Sol | `reasoning_effort: high` |
+| `model.level.2` | OpenAI GPT-5.6 Sol | `reasoning_effort: medium` |
+| `model.level.3` | OpenAI GPT-5.6 Luna | `reasoning_effort: xhigh` |
+
+This mapping is a reference configuration, not LUMI policy. Provider-specific
+options are opaque to LUMI core and are interpreted only by the runtime adapter.
 
 ## Public and Local Configuration
 
