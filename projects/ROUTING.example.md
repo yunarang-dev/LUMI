@@ -122,11 +122,18 @@ Delegation must not silently change the active project.
 When passing work between agents, include the canonical Project ID and resolved
 profile path in the task context when practical.
 
+For state-changing execution, also preserve the bounded execution scope
+established through trusted LUMI delegation. A child may narrow that scope but
+must not expand it or reuse it for another project, task, or session.
+
 ---
 
 ## Safety
 
 Routing information is configuration, not authorization.
+
+Project routing and execution authorization are separate concerns. Resolving
+the same Project ID does not create, renew, or expand mutation authority.
 
 A valid route does not bypass:
 
